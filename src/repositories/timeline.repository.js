@@ -2,7 +2,7 @@ import { db } from "../database/database.connection.js";
 
 export async function postsQuery() {
   return db.query(`SELECT 
-                        u.user_id,
+                        u.username,
                         u.photo,
                         p.description,
                         p.link

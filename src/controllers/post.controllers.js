@@ -5,7 +5,6 @@ export async function newPost(req, res) {
 
     try {
         const { userId } = res.locals
-        console.log(res.locals)
         const user_id = userId.id
         await insertPost(description, link,  user_id)
         res.sendStatus(201)
