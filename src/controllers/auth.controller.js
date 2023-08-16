@@ -7,7 +7,7 @@ export async function signUp(req, res) {
 
   try {
     const user = await userQueryByEmail(email);
-    if (user.rowCount !== 0) return res.status(409).send({ message: "User already exists" });
+    if (user.rowCount !== 0) return res.status(409).send("Email already in use");
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
@@ -25,10 +25,10 @@ export async function signIn(req, res) {
 
   try {
     const user = await userQueryByEmail(email);
-    if (user.rowCount === 0) return res.status(401).send({ message: "User not found" });
+    if (user.rowCount === 0) return res.status(401).send("User not found");
 
     const validPassword = bcrypt.compareSync(password, user.rows[0].password);
-    if (!validPassword) return res.status(401).send({ message: "Invalid password" });
+    if (!validPassword) return res.status(401).send("Invalid password");
 
     const token = uuidv4();
 
