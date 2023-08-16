@@ -19,11 +19,22 @@ export async function getTrendingsDB(){
 
 export async function selectPostsFromHashtag(hashtag){
     const select = await db.query(`
-    SELECT * FROM hashmiddle AS rel 
+    SELECT  
+        h.hashtag,
+        p.link,
+        p.description,
+        p.created_at,
+        u.username,
+        u.photo,
+        u.mail    
+    FROM hashmiddle AS rel 
     JOIN hashtags as h 
         ON h.id = rel.hashtag_id 
     JOIN posts p 
-        ON p.id = rel.post_id 
-    WHERE h.hashtag = $1;`,[hashtag]);
+        ON p.id = rel.post_id
+    JOIN users u
+        ON u.id = p.user_id 
+    WHERE h.hashtag = $1
+    ORDER BY p.created_at;`,[hashtag]);
     return select.rows;
 }
