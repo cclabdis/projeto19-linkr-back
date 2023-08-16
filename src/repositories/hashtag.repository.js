@@ -16,3 +16,14 @@ export async function getTrendingsDB(){
     const select =  await db.query(`SELECT h.id, h.hashtag, COUNT(rel.hashtag_id) AS appearances FROM hashtags AS h JOIN hashMiddle as rel ON rel.hashtag_id = h.id GROUP BY h.id ORDER BY appearances LIMIT 10;`);
     return select.rows;
 }
+
+export async function selectPostsFromHashtag(hashtag){
+    const select = await db.query(`
+    SELECT * FROM hashmiddle AS rel 
+    JOIN hashtags as h 
+        ON h.id = rel.hashtag_id 
+    JOIN posts p 
+        ON p.id = rel.post_id 
+    WHERE h.hashtag = $1;`,[hashtag]);
+    return select.rows;
+}
