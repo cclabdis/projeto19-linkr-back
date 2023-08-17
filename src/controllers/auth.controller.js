@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { userQueryByEmail, createUserDB, createSessionDB } from "../repositories/auth.repository.js";
 
 export async function signUp(req, res) {
-  const { name, photo, email, password } = req.body;
+  const { username, photo, email, password } = req.body;
 
   try {
     const user = await userQueryByEmail(email);
@@ -11,7 +11,7 @@ export async function signUp(req, res) {
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
-    await createUserDB(name, photo, email, encryptedPassword);
+    await createUserDB(username, photo, email, encryptedPassword);
 
     res.sendStatus(201);
   } catch (err) {
@@ -34,7 +34,11 @@ export async function signIn(req, res) {
 
     await createSessionDB(user.rows[0].id, token);
 
-    res.status(200).send({ token });
+    const data = { ...user.rows[0] };
+    delete data['password'];
+    delete data['created_at'];
+
+    res.status(200).send({ ...data, token });
   } catch (err) {
     return res.status(500).send(err.message);
   }
