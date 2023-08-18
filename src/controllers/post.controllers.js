@@ -1,5 +1,4 @@
 import { RegisterHashtag,RegisterHashMiddles } from "../repositories/hashtag.repository.js";
-import { insertPost } from "../repositories/post.repository.js"
 import { checkPost, deletePostId, insertPost } from "../repositories/post.repository.js"
 
 
