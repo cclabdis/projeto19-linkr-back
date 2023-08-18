@@ -1,6 +1,5 @@
 import { postsQuery } from "../repositories/timeline.repository.js";
 import { getMetadata } from "../middlewares/getMetadata.js";
-import urlMetadata from "url-metadata";
 
 export async function listPosts(req, res) {
     try {
