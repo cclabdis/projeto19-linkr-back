@@ -7,7 +7,7 @@ import { validateSchema } from "../middlewares/validateSchema.js";
 
 const timelineRouter = Router();
 
-timelineRouter.get("/timeline", listPosts);
+timelineRouter.get("/timeline",validateAuth ,listPosts);
 timelineRouter.post("/timeline",validateSchema(postSchema), validateAuth, newPost);
 timelineRouter.delete("/timeline/:id", validateAuth, deletePost)
 
