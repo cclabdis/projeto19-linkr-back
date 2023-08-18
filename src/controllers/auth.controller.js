@@ -10,6 +10,7 @@ export async function signUp(req, res) {
     if (user.rowCount !== 0) return res.status(409).send("Email already in use");
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
+
     await createUserDB(username, photo, email, encryptedPassword);
 
     res.sendStatus(201);
@@ -33,7 +34,11 @@ export async function signIn(req, res) {
 
     await createSessionDB(user.rows[0].id, token);
 
-    res.status(200).send({ token });
+    const data = { ...user.rows[0] };
+    delete data['password'];
+    delete data['created_at'];
+
+    res.status(200).send({ ...data, token });
   } catch (err) {
     return res.status(500).send(err.message);
   }
