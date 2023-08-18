@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authRouter from "./auth.routes.js";
 import trendingRouter from "./trendings.routes.js";
-import timelineRouter from "./timelineRoutes.js"
+import timelineRouter from "./timeline.routes.js"
 import likesRouter from "./likes.routes.js";
 
 

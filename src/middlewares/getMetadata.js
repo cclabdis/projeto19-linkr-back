@@ -1,4 +1,3 @@
-import { json } from "express";
 import urlMetadata from "url-metadata";
 
 export async function getMetadata(url) {
