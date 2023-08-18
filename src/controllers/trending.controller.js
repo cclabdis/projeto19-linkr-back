@@ -18,13 +18,3 @@ export async function getPostsByHashtag(req, res){
         return res.status(500).send(err.message);
     }
 }
-
-export async function testHashtags(req, res){
-    try{
-        const {text} = req.body;
-        const hashtags = await RegisterHashtag(text);
-        return res.send(hashtags);
-    }catch(err){
-        return res.status(500).send(err.message);
-    }
-}
