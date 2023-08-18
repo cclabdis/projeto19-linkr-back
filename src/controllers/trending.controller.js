@@ -1,3 +1,4 @@
+import { getMetadata } from "../middlewares/getMetadata.js";
 import { RegisterHashtag, getTrendingsDB, selectPostsFromHashtag } from "../repositories/hashtag.repository.js";
 
 export async function getTrendings(req,res){
@@ -11,8 +12,13 @@ export async function getTrendings(req,res){
 
 export async function getPostsByHashtag(req, res){
     try{
+        const {userId} = res.locals;
         const {hashtag} = req.params;
-        const lista = await selectPostsFromHashtag(hashtag);
+        let lista = await selectPostsFromHashtag(hashtag,userId);
+        for(let i =0; i<lista.length; i++){
+            let meta = await getMetadata(lista[i].link);
+            lista[i] = {...lista[i], linkMetadata:meta||{}};
+        }
         return res.send(lista);
     }catch(err){
         return res.status(500).send(err.message);

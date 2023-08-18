@@ -27,7 +27,7 @@ export async function getTrendingsDB(){
     return select.rows;
 }
 
-export async function selectPostsFromHashtag(hashtag){
+export async function selectPostsFromHashtag(hashtag,userId){
     const select = await db.query(`
     SELECT  
         h.hashtag,
@@ -36,17 +36,23 @@ export async function selectPostsFromHashtag(hashtag){
         p.created_at,
         u.username,
         u.photo,
-        u.mail    
+        u.mail,
+        COUNT (l.post_id) AS like_count,
+        EXISTS (SELECT 1 FROM likes WHERE user_id = $2 AND post_id = p.id) AS has_liked
     FROM hashmiddle AS rel 
     JOIN hashtags as h 
         ON h.id = rel.hashtag_id 
     JOIN posts p 
         ON p.id = rel.post_id
     JOIN users u
-        ON u.id = p.user_id 
+        ON u.id = p.user_id
+    LEFT JOIN likes l 
+        ON l.post_id = p.id
     WHERE h.hashtag = $1
+    GROUP BY p.id, u.username, u.photo, p.description, p.link, h.hashtag, u.mail
     ORDER BY P.id DESC
-    ;`,[hashtag]);
+    LIMIT 20
+    ;`,[hashtag,userId]);
     return select.rows;
 }
 
