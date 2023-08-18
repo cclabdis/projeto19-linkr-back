@@ -1,4 +1,4 @@
-import { getTrendingsDB, selectPostsFromHashtag } from "../repositories/hashtag.repository.js";
+import { RegisterHashtag, getTrendingsDB, selectPostsFromHashtag } from "../repositories/hashtag.repository.js";
 
 export async function getTrendings(req,res){
     try{
