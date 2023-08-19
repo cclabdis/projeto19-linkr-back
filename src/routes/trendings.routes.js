@@ -5,6 +5,6 @@ import { validateAuth } from "../middlewares/validateAuth.js";
 const trendingRouter = Router();
 
 trendingRouter.get("/trendings",getTrendings);
-trendingRouter.get("/posts/hashtag/:hashtag",validateAuth,getPostsByHashtag);
+trendingRouter.get("/posts/hashtags/:hashtag",validateAuth,getPostsByHashtag);
 
 export default trendingRouter;
