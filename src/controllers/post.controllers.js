@@ -26,7 +26,7 @@ export async function deletePost(req, res) {
         res.status(204).send("Excluido com sucesso")
 
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send( `deu ruim`);
     }
 }
 
