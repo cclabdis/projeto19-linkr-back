@@ -1,4 +1,5 @@
-import { RegisterHashtag,RegisterHashMiddles } from "../repositories/hashtag.repository.js";
+import ManipulateHashtags from "../middlewares/manipulateHashtags.js";
+import { RegisterHashtag,RegisterHashMiddles, updatePostInDB } from "../repositories/hashtag.repository.js";
 import { checkPost, deletePostId, insertPost } from "../repositories/post.repository.js"
 
 
@@ -28,10 +29,27 @@ export async function deletePost(req, res) {
         if (check.rowCount === 0) return res.sendStatus(404)
 
         await deletePostId(id)
-        res.status(204).send("Excluido com sucesso")
+        return res.status(204).send("Excluido com sucesso")
 
     } catch (err) {
         res.status(500).send( `deu ruim`);
     }
 }
 
+export async function updatePost(req, res){
+    try{
+        const {id} = req.params;
+        const {userId} = res.locals;
+        const {description, hashtagsList} = req.body;
+        const post = await checkPost(id);
+        if (post.rowCount === 0) return res.sendStatus(404);
+        if (post.rows[0].user_id !== userId) return res.sendStatus(401);
+        const CleanHashtags = hashtagsList.map((el)=>{return el.replace('#','')});
+        await ManipulateHashtags(CleanHashtags, id);
+        const newPost = await updatePostInDB(description, id);
+        return res.send(newPost).status(200);
+
+    }catch(err){
+        return res.status(500).send(err.message);
+    }
+}
