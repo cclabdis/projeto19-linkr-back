@@ -4,6 +4,7 @@ export async function postsQuery(userId) {
   return db.query(`SELECT 
                         u.username,
                         u.photo,
+                        u.id AS user_id,
                         p.id,
                         p.description,
                         p.link,
@@ -12,7 +13,7 @@ export async function postsQuery(userId) {
                     FROM posts p 
                     JOIN users u ON p.user_id = u.id
                     LEFT JOIN likes l ON l.post_id = p.id
-                    GROUP BY p.id, u.username, u.photo, p.description, p.link
+                    GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                     ORDER BY p.created_at DESC
                     LIMIT 20
                     `,[userId])
