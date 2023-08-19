@@ -59,7 +59,7 @@ export async function selectPostsFromHashtag(hashtag,userId){
 export async function RegisterHashtag(hashtagsList){
     const resp = [];
     const promises = hashtagsList.map(async (el)=>{
-        const hashtag = el.slice(1); 
+        const hashtag = el.replace('#',''); 
         const select = await db.query(`SELECT * FROM hashtags WHERE hashtag=$1;`,[hashtag]);
         let created_id = [];
         if(!select.rows[0]) created_id =  await db.query(`INSERT INTO hashtags (hashtag) VALUES($1) RETURNING *;`,[hashtag]);
@@ -78,4 +78,32 @@ export async function RegisterHashMiddles(hashtagsId, postId){
     });
     await Promise.all(promises);
     return respIds;
+}
+
+
+export async function getHashtags(postId) {
+    const select = await db.query(`
+    SELECT
+        hs.id, 
+        h.hashtag 
+    FROM hashmiddle AS hs 
+    JOIN hashtags h ON h.id = hs.hashtag_id
+    WHERE post_id = $1;`, [postId]);
+    return select.rows;
+}
+
+export async function deleteHashmiddle(id){
+    await db.query('DELETE FROM hashmiddle WHERE id= $1',[id]);
+}
+
+export async function updatePostInDB(desc, id){
+    const resp = await db.query(`
+    UPDATE
+        posts
+    SET
+        description = $1
+    WHERE
+        id = $2
+    RETURNING *;`,[desc, id]);
+    return resp.rows[0];
 }
