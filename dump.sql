@@ -183,7 +183,7 @@ ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    username character varying(10),
+    username character varying(50),
     photo character varying(255),
     mail text,
     password text,
