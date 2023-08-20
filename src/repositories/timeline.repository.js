@@ -1,7 +1,8 @@
 import { db } from "../database/database.connection.js";
 
 export async function postsQuery(userId) {
-  return db.query(`SELECT 
+  return db.query(
+    `SELECT 
                         u.username,
                         u.photo,
                         u.id AS user_id,
@@ -16,6 +17,13 @@ export async function postsQuery(userId) {
                     GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                     ORDER BY p.created_at DESC
                     LIMIT 20
-                    `,[userId])
+                    `,
+    [userId]
+  );
 }
-//JEFTI: Eu adicionei as linhas 10,11, 14 e 15 para incluir as informações sobre os likes a resposta.
+
+//JEFTI: Eu adicionei as linhas 10, 11, 14 e 15 para incluir as informações sobre os likes a resposta.
+
+export function getUsersByUsernameDB(username) {
+  return db.query(`SELECT users.id, users.username, users.photo FROM users WHERE LOWER(username) LIKE LOWER($1);`, [username + "%"]);
+}
