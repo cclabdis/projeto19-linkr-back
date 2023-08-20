@@ -6,7 +6,7 @@ export async function listPosts(req, res) {
     const { userId } = res.locals;
     const posts = await postsQuery(userId);
 
-    if (posts.rowCount === 0) return res.status(200).send("There are no posts yet");
+    if (posts.rowCount === 0) return res.status(200).send([]);
     for (let i = 0; i < posts.rowCount; i++) {
       let p = posts.rows[i];
       let meta = await getMetadata(p.link);

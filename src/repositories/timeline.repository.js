@@ -20,6 +20,7 @@ export async function postsQuery(userId) {
                     `,
     [userId]
   );
+
 }
 
 export function getUsersByUsernameDB(username) {
