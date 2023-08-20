@@ -1,4 +1,4 @@
-import { postsQuery, getUsersByUsernameDB } from "../repositories/timeline.repository.js";
+import { postsQuery, getUsersByUsernameDB, getUserPostByName } from "../repositories/timeline.repository.js";
 import { getMetadata } from "../middlewares/getMetadata.js";
 
 export async function listPosts(req, res) {
@@ -27,6 +27,27 @@ export async function getUsersList(req, res) {
     const usersFound = await getUsersByUsernameDB(username);
 
     return res.send(usersFound.rows).status(200);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}
+
+export async function getUserPost(req, res) {
+  const { username } = req.params;
+  const { userId } = res.locals;
+
+  try {
+    const userFound = await getUserPostByName(username, userId);
+
+    let userFoundPosts = userFound.rows;
+
+    for (let i = 0; i < userFoundPosts.length; i++) {
+      let meta = await getMetadata(userFoundPosts[i].link);
+      userFoundPosts[i] = { ...userFoundPosts[i], linkMetadata: meta || {} };
+    }
+
+    return res.send(userFoundPosts).status(200);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
