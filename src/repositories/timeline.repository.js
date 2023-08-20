@@ -9,6 +9,14 @@ export async function postsQuery(userId) {
                         p.id,
                         p.description,
                         p.link,
+                        (
+                            SELECT JSON_AGG (
+                                JSON_BUILD_OBJECT('user_id', ul.id, 'username', ul.username)
+                            )
+                            FROM likes lp
+                            JOIN users ul ON lp.user_id = ul.id
+                            WHERE lp.post_id = p.id
+                        ) AS likes_users,
                         COUNT (l.post_id) AS like_count,
                         EXISTS (SELECT 1 FROM likes WHERE user_id = $1 AND post_id = p.id) AS has_liked
                     FROM posts p 
