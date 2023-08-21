@@ -34,11 +34,11 @@ export async function getUsersList(req, res) {
 }
 
 export async function getUserPost(req, res) {
-  const { username } = req.params;
+  const {id} = req.params;
   const { userId } = res.locals;
 
   try {
-    const userFound = await getUserPostByName(username, userId);
+    const userFound = await getUserPostByName(id, userId);
 
     let userFoundPosts = userFound.rows;
 

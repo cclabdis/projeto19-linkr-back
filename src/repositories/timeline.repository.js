@@ -35,7 +35,7 @@ export function getUsersByUsernameDB(username) {
   return db.query(`SELECT users.id, users.username, users.photo FROM users WHERE LOWER(username) LIKE LOWER($1);`, [username + "%"]);
 }
 
-export async function getUserPostByName(username, userId) {
+export async function getUserPostByName(id, userId) {
   return db.query(
     `SELECT 
                           u.username,
@@ -49,11 +49,11 @@ export async function getUserPostByName(username, userId) {
                       FROM posts p 
                       JOIN users u ON p.user_id = u.id
                       LEFT JOIN likes l ON l.post_id = p.id
-                      WHERE LOWER(u.username) = LOWER($1)
+                      WHERE u.id = $1
                       GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                       ORDER BY p.created_at DESC
                       LIMIT 20
                       `,
-    [username, userId]
+    [id, userId]
   );
 }
