@@ -10,7 +10,7 @@ const timelineRouter = Router();
 
 timelineRouter.get("/timeline", validateAuth, listPosts);
 timelineRouter.get("/timeline/:username", validateAuth, getUsersList);
-timelineRouter.get("/timeline/user/:username", validateAuth, getUserPost);
+timelineRouter.get("/timeline/user/:id", validateAuth, getUserPost);
 timelineRouter.post("/timeline", validateSchema(postSchema), validateAuth, newPost);
 timelineRouter.delete("/timeline/:id", validateAuth, deletePost);
 timelineRouter.patch("/timeline/posts/:id", validateAuth, validateSchema(editPostSchema), updatePost);
