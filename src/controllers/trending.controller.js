@@ -21,6 +21,7 @@ export async function getPostsByHashtag(req, res){
         }
         return res.send(lista);
     }catch(err){
+        console.log(err);
         return res.status(500).send(err.message);
     }
 }
