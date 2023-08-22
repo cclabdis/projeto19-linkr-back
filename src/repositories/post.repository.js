@@ -14,19 +14,21 @@ export async function insertPost(description, link, user_id) {
 export async function deletePostId(id) {
   try {
     await db.query('SET CONSTRAINTS ALL DEFERRED');
-    await db.query(`
-            DELETE FROM hashmiddle WHERE post_id = $1;
-        `, [id]);
+    await db.query('BEGIN');
 
-    await db.query(`
-            DELETE FROM posts WHERE id = $1;
-        `, [id]);
+    await db.query(`DELETE FROM hashmiddle WHERE post_id = $1;`, [id]);
+    await db.query(`DELETE FROM likes WHERE post_id = $1;`, [id]);
+    await db.query(`DELETE FROM repost WHERE post_id = $1;`, [id]);
+    await db.query(`DELETE FROM comments WHERE post_id = $1;`, [id]);
+    await db.query(`DELETE FROM posts WHERE id = $1;`, [id]);
 
+    await db.query('COMMIT');
     await db.query('SET CONSTRAINTS ALL IMMEDIATE');
 
     return true; 
 
   } catch (err) {
+    console.log(err);
     await db.query('ROLLBACK'); 
     throw err; 
   }

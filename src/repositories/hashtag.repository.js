@@ -1,18 +1,6 @@
 import { db } from "../database/database.connection.js";
 
 export async function getTrendingsDB(){
-    /*await db.query(`INSERT INTO users (username,photo,mail,password,created_at) VALUES('jefti','https://img.olhardigital.com.br/wp-content/uploads/2019/09/20190912030622.jpg','jefti@admin.com','123',NOW()) ;`);
-    await db.query(`INSERT INTO hashtags (hashtag) VALUES ('driven');`);
-    await db.query(`INSERT INTO posts 
-    (user_id,link,description,created_at) VALUES 
-    (
-        1,
-        'https://www.notion.so/bootcampra/Revis-o-React-51df562cfaa241bf98401a1980ea065f',
-        'Revisão react da let!',
-        NOW()
-    );`);
-    await db.query(`INSERT INTO hashmiddle (post_id,hashtag_id) VALUES (1,1)`);
-    await db.query(`INSERT INTO hashmiddle (post_id,hashtag_id) VALUES (1,2)`);*/
     const select =  await db.query(`
     SELECT 
         h.id, 
@@ -32,11 +20,21 @@ export async function selectPostsFromHashtag(hashtag,userId){
     SELECT  
         h.hashtag,
         p.link,
+        p.id,
         p.description,
         p.created_at,
+        u.id AS posterId,
         u.username,
         u.photo,
         u.mail,
+        (
+            SELECT JSON_AGG (
+                JSON_BUILD_OBJECT('user_id', ul.id, 'username', ul.username)
+            )
+            FROM likes lp
+            JOIN users ul ON lp.user_id = ul.id
+            WHERE lp.post_id = p.id
+        ) AS likes_users,
         COUNT (l.post_id) AS like_count,
         EXISTS (SELECT 1 FROM likes WHERE user_id = $2 AND post_id = p.id) AS has_liked
     FROM hashmiddle AS rel 
@@ -49,7 +47,7 @@ export async function selectPostsFromHashtag(hashtag,userId){
     LEFT JOIN likes l 
         ON l.post_id = p.id
     WHERE h.hashtag = $1
-    GROUP BY p.id, u.username, u.photo, p.description, p.link, h.hashtag, u.mail
+    GROUP BY p.id, u.username,posterId, u.photo, p.description, p.link, h.hashtag, u.mail
     ORDER BY P.id DESC
     LIMIT 20
     ;`,[hashtag,userId]);
