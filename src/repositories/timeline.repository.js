@@ -31,8 +31,18 @@ export async function postsQuery(userId) {
 
 }
 
-export function getUsersByUsernameDB(username) {
-  return db.query(`SELECT users.id, users.username, users.photo FROM users WHERE LOWER(username) LIKE LOWER($1);`, [username + "%"]);
+export async function getUsersByUsernameDB(username,userId) {
+  return db.query(`
+  SELECT 
+    users.id, 
+    users.username, 
+    users.photo,
+    EXISTS (SELECT 1 FROM followers WHERE follower_id = $2 AND target_id = users.id) AS "isFollowing" 
+  FROM users 
+  WHERE 
+    LOWER(username) LIKE LOWER($1)
+  ORDER BY "isFollowing" DESC;`, 
+  [username + "%",userId]);
 }
 
 export async function getUserPostByName(id, userId) {
