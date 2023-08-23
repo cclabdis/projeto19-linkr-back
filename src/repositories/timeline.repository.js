@@ -50,7 +50,7 @@ export async function getUserPostByName(id, userId) {
                             SELECT JSON_AGG (
                                 JSON_BUILD_OBJECT('user_id', ul.id, 'username', ul.username)
                             )
-                            FROM likes lps
+                            FROM likes lp
                             JOIN users ul ON lp.user_id = ul.id
                             WHERE lp.post_id = p.id
                         ) AS likes_users
