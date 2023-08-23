@@ -22,10 +22,9 @@ export async function listPosts(req, res) {
 
 export async function getUsersList(req, res) {
   const { username } = req.params;
-
+  const { userId } = res.locals;
   try {
-    const usersFound = await getUsersByUsernameDB(username);
-
+    const usersFound = await getUsersByUsernameDB(username,userId);
     return res.send(usersFound.rows).status(200);
   } catch (error) {
     console.log(error);
