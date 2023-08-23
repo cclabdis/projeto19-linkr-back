@@ -37,9 +37,8 @@ export async function CheckFollowSituationDB(requestId, targetId){
 
 export async function CreateFollowRelation(requestId, targetId){
     const createdId = await db.query(`
-        INSERT INTO followers (id,target_id,follower_id)
+        INSERT INTO followers (target_id,follower_id)
         VALUES(
-            1,
             $1,            
             $2
         )
