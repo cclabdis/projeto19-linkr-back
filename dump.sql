@@ -25,12 +25,32 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.comments (
-    id integer NOT NULL,
     comment text,
     post_id integer,
     user_id integer,
-    created_at timestamp without time zone DEFAULT now()
+    created_at timestamp without time zone DEFAULT now(),
+    id integer NOT NULL
 );
+
+
+--
+-- Name: comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.comments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: comments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 
 
 --
@@ -38,10 +58,30 @@ CREATE TABLE public.comments (
 --
 
 CREATE TABLE public.followers (
-    id integer NOT NULL,
     target_id integer,
-    follower_id integer
+    follower_id integer,
+    id integer NOT NULL
 );
+
+
+--
+-- Name: followers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.followers_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: followers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.followers_id_seq OWNED BY public.followers.id;
 
 
 --
@@ -174,10 +214,30 @@ ALTER SEQUENCE public.posts_id_seq OWNED BY public.posts.id;
 --
 
 CREATE TABLE public.repost (
-    id integer NOT NULL,
     post_id integer,
-    user_id integer
+    user_id integer,
+    id integer NOT NULL
 );
+
+
+--
+-- Name: repost_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.repost_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: repost_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.repost_id_seq OWNED BY public.repost.id;
 
 
 --
@@ -247,6 +307,20 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: comments id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comments ALTER COLUMN id SET DEFAULT nextval('public.comments_id_seq'::regclass);
+
+
+--
+-- Name: followers id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.followers ALTER COLUMN id SET DEFAULT nextval('public.followers_id_seq'::regclass);
+
+
+--
 -- Name: hashmiddle id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -272,6 +346,13 @@ ALTER TABLE ONLY public.likes ALTER COLUMN id SET DEFAULT nextval('public.likes_
 --
 
 ALTER TABLE ONLY public.posts ALTER COLUMN id SET DEFAULT nextval('public.posts_id_seq'::regclass);
+
+
+--
+-- Name: repost id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.repost ALTER COLUMN id SET DEFAULT nextval('public.repost_id_seq'::regclass);
 
 
 --
@@ -343,6 +424,20 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- Name: comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.comments_id_seq', 1, false);
+
+
+--
+-- Name: followers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.followers_id_seq', 1, false);
+
+
+--
 -- Name: hashmiddle_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -368,6 +463,13 @@ SELECT pg_catalog.setval('public.likes_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.posts_id_seq', 1, false);
+
+
+--
+-- Name: repost_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.repost_id_seq', 1, false);
 
 
 --
