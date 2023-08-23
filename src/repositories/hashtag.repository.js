@@ -49,7 +49,7 @@ export async function selectPostsFromHashtag(hashtag,userId){
     WHERE h.hashtag = $1
     GROUP BY p.id, u.username,posterId, u.photo, p.description, p.link, h.hashtag, u.mail
     ORDER BY P.id DESC
-    LIMIT 20
+    LIMIT 10
     ;`,[hashtag,userId]);
     return select.rows;
 }
