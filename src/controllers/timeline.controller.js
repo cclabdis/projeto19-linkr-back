@@ -5,7 +5,9 @@ import { checkFollow } from "../repositories/follow.repository.js";
 export async function listPosts(req, res) {
   try {
     const { userId } = res.locals;
-    const posts = await postsQuery(userId);
+    const limit = req.headers.limit;
+   
+    const posts = await postsQuery(userId, limit);
 
     if (posts.rowCount === 0){ 
       const list = await checkFollow(userId);
@@ -40,9 +42,10 @@ export async function getUsersList(req, res) {
 export async function getUserPost(req, res) {
   const {id} = req.params;
   const { userId } = res.locals;
+  const limit = req.headers.limit;
 
   try {
-    const userFound = await getUserPostByName(id, userId);
+    const userFound = await getUserPostByName(id, userId, limit);
 
     let userFoundPosts = userFound.rows;
 

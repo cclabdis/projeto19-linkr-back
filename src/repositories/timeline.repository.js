@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export async function postsQuery(userId) {
+export async function postsQuery(userId, limit) {
   return db.query(
     `SELECT
                         u.username,
@@ -27,9 +27,9 @@ export async function postsQuery(userId) {
                     WHERE f.follower_id = $1 -- Somente as postagens dos usuários que o usuário segue
                     GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                     ORDER BY p.created_at DESC
-                    LIMIT 10
+                    LIMIT $2
                     `,
-    [userId]
+    [userId, limit]
   );
 
 }
@@ -48,7 +48,7 @@ export async function getUsersByUsernameDB(username,userId) {
   [username + "%",userId]);
 }
 
-export async function getUserPostByName(id, userId) {
+export async function getUserPostByName(id, userId, limit) {
   return db.query(
     `SELECT
                           u.username,
@@ -73,9 +73,9 @@ export async function getUserPostByName(id, userId) {
                       WHERE u.id = $1
                       GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                       ORDER BY p.created_at DESC
-                      LIMIT 20
+                      LIMIT $3
                       `,
-    [id, userId]
+    [id, userId, limit]
   );
 };
 

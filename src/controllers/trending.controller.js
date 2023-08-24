@@ -10,11 +10,13 @@ export async function getTrendings(req,res){
     }
 }
 
-export async function getPostsByHashtag(req, res){
+export async function getPostsByHashtag(req, res, limit){
     try{
         const {userId} = res.locals;
         const {hashtag} = req.params;
-        let lista = await selectPostsFromHashtag(hashtag,userId);
+        const limit = req.headers.limit;
+
+        let lista = await selectPostsFromHashtag(hashtag,userId, limit);
         for(let i =0; i<lista.length; i++){
             let meta = await getMetadata(lista[i].link);
             lista[i] = {...lista[i], linkMetadata:meta||{}};
