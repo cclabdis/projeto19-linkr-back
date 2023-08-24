@@ -23,8 +23,8 @@ export async function postsQuery(userId, limit) {
                     FROM posts p
                     JOIN users u ON p.user_id = u.id
                     LEFT JOIN likes l ON l.post_id = p.id
-                    JOIN followers f ON p.user_id = f.target_id -- Join com a tabela de followers
-                    WHERE f.follower_id = $1 -- Somente as postagens dos usuários que o usuário segue
+                    JOIN followers f ON p.user_id = f.target_id
+                    WHERE f.follower_id = $1 OR p.user_id = $1
                     GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                     ORDER BY p.created_at DESC
                     LIMIT $2
