@@ -1,4 +1,4 @@
-import { postsQuery, getUsersByUsernameDB, getUserPostByName } from "../repositories/timeline.repository.js";
+import { postsQuery, getUsersByUsernameDB, getUserPostByName, findNewPosts } from "../repositories/timeline.repository.js";
 import { getMetadata } from "../middlewares/getMetadata.js";
 
 export async function listPosts(req, res) {
@@ -50,5 +50,22 @@ export async function getUserPost(req, res) {
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
+  }
+}
+
+export const getNewPosts = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const newPostsCount = await findNewPosts(postId);
+
+    if(newPostsCount > 0) {
+      res.status(200).send(newPostsCount);
+    } else {
+      res.sendStatus(204);
+    }
+  } catch (err) {
+    console.log(err.message);
+    res.sendStatus(500);
   }
 }
