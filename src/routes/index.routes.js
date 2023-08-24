@@ -4,6 +4,7 @@ import trendingRouter from "./trendings.routes.js";
 import timelineRouter from "./timeline.routes.js"
 import likesRouter from "./likes.routes.js";
 import followRouter from "./follow.routes.js";
+import commentRouter from "./comment.routes.js";
 
 
 const indexRouter = Router();
@@ -13,5 +14,6 @@ indexRouter.use(trendingRouter);
 indexRouter.use(timelineRouter);
 indexRouter.use(likesRouter);
 indexRouter.use(followRouter);
+indexRouter.use(commentRouter);
 
 export default indexRouter;
