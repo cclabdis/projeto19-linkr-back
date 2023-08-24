@@ -1,12 +1,17 @@
 import { postsQuery, getUsersByUsernameDB, getUserPostByName, findNewPosts } from "../repositories/timeline.repository.js";
 import { getMetadata } from "../middlewares/getMetadata.js";
+import { checkFollow } from "../repositories/follow.repository.js";
 
 export async function listPosts(req, res) {
   try {
     const { userId } = res.locals;
     const posts = await postsQuery(userId);
 
-    if (posts.rowCount === 0) return res.status(200).send([]);
+    if (posts.rowCount === 0){ 
+      const list = await checkFollow(userId);
+      if(list.length === 0) return res.status(200).send([{message:`You don't follow anyone yet. Search for new friends!`}]);
+      return res.status(200).send([{message:`No posts found from your friends.`}]);
+    };
     for (let i = 0; i < posts.rowCount; i++) {
       let p = posts.rows[i];
       let meta = await getMetadata(p.link);
