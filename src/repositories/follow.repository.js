@@ -65,3 +65,8 @@ export async function DeleteFollowRelation(requestId, targetId){
         return {erro:"Não conseguiu deletar a relação de seguidor no banco, tente novamente mais tarde!"};
     }
 }
+
+export async function checkFollow(userId){
+    const select = await db.query(`SELECT * FROM followers WHERE follower_id = $1;`,[userId]);
+    return select.rows;
+}
