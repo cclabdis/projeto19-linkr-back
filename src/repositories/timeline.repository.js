@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export async function postsQuery(userId, limit) {
+export async function postsQuery(userId) {
   return db.query(
     `SELECT
                         u.username,
@@ -9,6 +9,9 @@ export async function postsQuery(userId, limit) {
                         p.id,
                         p.description,
                         p.link,
+                        COUNT(DISTINCT l.id) AS like_count,
+                        ( SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comments_count,
+                        ( SELECT COUNT(*) FROM repost rp WHERE rp.post_id = p.id) AS reposts_count,
                         p.created_at,
                         (
                             SELECT JSON_AGG (
@@ -22,14 +25,14 @@ export async function postsQuery(userId, limit) {
                         EXISTS (SELECT 1 FROM likes WHERE user_id = $1 AND post_id = p.id) AS has_liked
                     FROM posts p
                     JOIN users u ON p.user_id = u.id
+                    JOIN followers f ON p.user_id = f.target_id
                     LEFT JOIN likes l ON l.post_id = p.id
-                    JOIN followers f ON p.user_id = f.target_id -- Join com a tabela de followers
-                    WHERE f.follower_id = $1 -- Somente as postagens dos usuários que o usuário segue
-                    GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
+                    WHERE f.follower_id = $1 OR p.user_id = $1
+                    GROUP BY u.username, u.photo, u.id, p.id, p.description, p.link
                     ORDER BY p.created_at DESC
-                    LIMIT $2
+                    LIMIT 10
                     `,
-    [userId, limit]
+    [userId]
   );
 
 }
@@ -48,7 +51,7 @@ export async function getUsersByUsernameDB(username,userId) {
   [username + "%",userId]);
 }
 
-export async function getUserPostByName(id, userId, limit) {
+export async function getUserPostByName(id, userId) {
   return db.query(
     `SELECT
                           u.username,
@@ -57,6 +60,8 @@ export async function getUserPostByName(id, userId, limit) {
                           p.id,
                           p.description,
                           p.link,
+                          ( SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comments_count,
+                          ( SELECT COUNT(*) FROM repost rp WHERE rp.post_id = p.id) AS reposts_count,
                           COUNT (l.post_id) AS like_count,
                           EXISTS (SELECT 1 FROM likes WHERE user_id = $2 AND post_id = p.id) AS has_liked,
                           (
@@ -73,9 +78,9 @@ export async function getUserPostByName(id, userId, limit) {
                       WHERE u.id = $1
                       GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                       ORDER BY p.created_at DESC
-                      LIMIT $3
+                      LIMIT 20
                       `,
-    [id, userId, limit]
+    [id, userId]
   );
 };
 
