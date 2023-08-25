@@ -63,9 +63,10 @@ export async function getUserPost(req, res) {
 
 export const getNewPosts = async (req, res) => {
   const { postId } = req.params;
+  const { userId } = res.locals;
 
   try {
-    const newPostsCount = await findNewPosts(postId);
+    const newPostsCount = await findNewPosts(userId, postId);
 
     if(newPostsCount > 0) {
       res.status(200).send(newPostsCount);

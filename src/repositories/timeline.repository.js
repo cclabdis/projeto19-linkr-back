@@ -110,10 +110,12 @@ export async function getUserPostByName(id, userId) {
 
 };
 
-export async function findNewPosts(id) {
+export async function findNewPosts(userId, postId) {
   try {
     const newPosts = await db.query(
-      `SELECT COUNT(*) FROM posts WHERE id > $1`, [id]
+      `SELECT COUNT(*) FROM posts p
+        JOIN followers f ON f.target_id = p.user_id
+      WHERE p.id > $1 AND f.follower_id = $2 `, [postId, userId]
     );
     return newPosts.rows[0].count;
   } catch (err) {
