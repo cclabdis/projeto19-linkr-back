@@ -17,7 +17,7 @@ export async function getComments(req, res){
     try{
         const {userId} = res.locals;
         const {postId} = req.params;
-        const select = await SelectCommentaryDB(postId);
+        const select = await SelectCommentaryDB(postId, userId);
         return res.send(select);
     }catch(err){
         console.log(err);
