@@ -6,7 +6,6 @@ const repostRouter = Router();
 
 repostRouter.use(validateAuth);
 
-repostRouter.post("/repost/:postId", repostController.postRepost);
-repostRouter.delete("/repost/:postId", repostController.deleteRepost);
+repostRouter.post("/repost", repostController.postRepost);
 
 export default repostRouter;

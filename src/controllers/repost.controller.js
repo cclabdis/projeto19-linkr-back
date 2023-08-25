@@ -2,9 +2,10 @@ import { addRepost, removeRepost } from "../repositories/repost.repository.js"
 
 function repostController(req, res) {
     return async (action) => {
-        const { postId } = req.params;
+        const postId = req.body.postId;
         const userId = res.locals.userId;
-
+console.log(postId)
+console.log(userId)
         if (!userId) return res.sendStatus(401);
         if (!postId) return res.sendStatus(404);
 
@@ -29,5 +30,4 @@ function repostController(req, res) {
 
 export default {
     postRepost: (req, res) => repostController(req, res)('add'),
-    deleteRepost: (req, res) => repostController(req, res)('remove'), 
 };
