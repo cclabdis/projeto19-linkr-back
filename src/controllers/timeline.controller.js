@@ -8,19 +8,17 @@ export async function listPosts(req, res) {
     const limit = req.headers.limit;
    
     const posts = await postsQuery(userId, limit);
-
-    if (posts.rowCount === 0){ 
+    if (posts.length === 0){ 
       const list = await checkFollow(userId);
       if(list.length === 0) return res.status(200).send([{message:`You don't follow anyone yet. Search for new friends!`}]);
       return res.status(200).send([{message:`No posts found from your friends.`}]);
     };
-    for (let i = 0; i < posts.rowCount; i++) {
-      let p = posts.rows[i];
+    for (let i = 0; i < posts.length; i++) {
+      let p = posts[i];
       let meta = await getMetadata(p.link);
       p.linkMetadata = meta || {};
     }
-
-    res.status(200).send(posts.rows);
+    res.status(200).send(posts);
   } catch (err) {
     console.log(err);
     return res.status(500).send("An error occured while trying to fetch the posts, please refresh the page");
