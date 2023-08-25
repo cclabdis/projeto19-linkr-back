@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-export async function postsQuery(userId) {
+export async function postsQuery(userId,limit) {
   return db.query(
     `SELECT
       u.username,
@@ -33,7 +33,7 @@ export async function postsQuery(userId) {
       ) AS reposts_users
     FROM posts p
     JOIN users u ON p.user_id = u.id
-    JOIN followers f ON p.user_id = f.target_id
+    LEFT JOIN followers f ON p.user_id = f.target_id
     WHERE f.follower_id = $1 OR p.user_id = $1 OR p.id IN (
       SELECT post_id FROM repost WHERE user_id = $1
     )
@@ -43,7 +43,6 @@ export async function postsQuery(userId) {
     `,
     [userId]
   );
-
 }
 
 export async function getUsersByUsernameDB(username,userId) {
