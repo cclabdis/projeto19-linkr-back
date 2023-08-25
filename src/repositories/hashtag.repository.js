@@ -38,6 +38,14 @@ export async function selectPostsFromHashtag(hashtag,userId, limit){
         COUNT (l.post_id) AS like_count,
         ( SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comments_count,
         ( SELECT COUNT(*) FROM repost rp WHERE rp.post_id = p.id) AS reposts_count,
+        (
+            SELECT JSON_AGG (
+              JSON_BUILD_OBJECT('user_id', ur.id, 'username', ur.username, 'photo', ur.photo)
+            )
+            FROM repost r
+            JOIN users ur ON r.user_id = ur.id
+            WHERE r.post_id = p.id
+          ) AS reposts_users,
         EXISTS (SELECT 1 FROM likes WHERE user_id = $2 AND post_id = p.id) AS has_liked
     FROM hashmiddle AS rel 
     JOIN hashtags as h 
