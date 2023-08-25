@@ -16,6 +16,7 @@ export async function SelectCommentaryDB(postId, viewId){
         SELECT
             c.id AS "comment_id",
             c.user_id,
+            c.comment AS comment,
             u.photo AS user_photo,
             u.mail AS user_mail,
             u.username,
