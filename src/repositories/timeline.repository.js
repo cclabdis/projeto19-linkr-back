@@ -185,7 +185,7 @@ export async function getUserPostByName(id, userId) {
                       FROM posts p
                       JOIN users u ON p.user_id = u.id
                       LEFT JOIN repost rp ON p.id = rp.post_id AND rp.user_id = $1
-                      WHERE p.user_id = $1 OR resposts_user.user_id = $1
+                      WHERE p.user_id = $1 OR rp.user_id = $1
                       GROUP BY p.id, u.username, u.photo, p.description, p.link, u.id
                       ORDER BY p.created_at DESC
                       LIMIT 20
